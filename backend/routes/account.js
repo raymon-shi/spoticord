@@ -1,4 +1,5 @@
 const express = require('express')
+const bcrypt = require('bcrypt')
 
 const User = require('../models/user')
 const isAuthenticated = require('../middleware/isAuthenticated')
@@ -24,8 +25,9 @@ router.post('/login', async (req, res, next) => {
   const { body } = req
   const { username, password } = body
   try {
-    const user = await User.findOne({ username, password })
-    if (user) {
+    const user = await User.findOne({ username })
+    const match = await bcrypt.compare(password, user.password)
+    if (match) {
       req.session.username = username
       res.send(user)
     } else {
