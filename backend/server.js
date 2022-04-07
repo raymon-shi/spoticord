@@ -5,8 +5,7 @@ const cookieSession = require('cookie-session')
 const path = require('path')
 const mongoose = require('mongoose')
 
-// const isAuthenticated = require('./middlewares/isAuthenticated')
-// const accountRouter = require('./routes/account')
+const accountRouter = require('./routes/account')
 // const apiRouter = require('./routes/api')
 
 const app = express()
@@ -32,7 +31,7 @@ app.use(
 )
 
 // routers
-// app.use('/account', accountRouter)
+app.use('/account', accountRouter)
 // app.use('/api', apiRouter)
 
 // default error handling
