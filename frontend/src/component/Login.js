@@ -14,11 +14,11 @@ const Login = () => {
 
   const loggingIn = async () => {
     try {
-      const { data } = await axios.post('/account/login', { username, password })
-      if (data.username) {
-        navigate('/')
-      }
+      await axios.post('/account/login', { username, password })
+      const { data } = await axios.get('/spotify/login')
+      window.location.href = data
     } catch (error) {
+      console.log(error)
       setLoginError('Logging in was unsuccessful! Check login information!')
     }
   }

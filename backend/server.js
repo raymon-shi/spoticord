@@ -4,8 +4,10 @@ const express = require('express')
 const cookieSession = require('cookie-session')
 const path = require('path')
 const mongoose = require('mongoose')
+// const cors = require('cors')
 
 const accountRouter = require('./routes/account')
+const spotifyRouter = require('./routes/spotify')
 // const apiRouter = require('./routes/api')
 
 const app = express()
@@ -20,6 +22,7 @@ mongoose.connect(MONGO_URI, {
 
 app.use(express.static('dist'))
 app.use(express.json())
+// app.use(cors())
 
 // session
 app.use(
@@ -32,6 +35,7 @@ app.use(
 
 // routers
 app.use('/account', accountRouter)
+app.use('/spotify', spotifyRouter)
 // app.use('/api', apiRouter)
 
 // default error handling
