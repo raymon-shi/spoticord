@@ -8,14 +8,24 @@ import { Link, useNavigate } from 'react-router-dom'
 const Signup = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [token, setToken] = useState('')
   const [signupError, setSignupError] = useState('')
   const navigate = useNavigate()
+
+  const spotifyLogin = async () => {
+    try {
+      const { data } = await axios.get('/spotify/login')
+      window.open(data)
+    } catch (error) {
+      setSignupError('Spotify login was unsuccessful!')
+    }
+  }
 
   const signingUp = async () => {
     try {
       await Promise.all([
-        await axios.post('/account/signup', { username, password }),
-        await axios.post('/account/login', { username, password }),
+        await axios.post('/account/signup', { username, password, token }),
+        await axios.post('/account/login', { username, password, token }),
       ]).then(() => navigate('/'))
     } catch (error) {
       setSignupError('User creation was unsuccessul! Username already in use!')
@@ -35,7 +45,14 @@ const Signup = () => {
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Enter password..." />
         </Form.Group>
-        <Button variant="primary" type="submit" className="w-100" onClick={signingUp}>
+        <Form.Group className="mb-3" controlId="formBasicToken">
+          <Form.Label>Access Token</Form.Label>
+          <Form.Control type="password" placeholder="Enter access token..." value={token} onChange={e => setToken(e.target.value)} />
+        </Form.Group>
+        <Button style={{ background: '#1ED760' }} type="submit" className="w-100" onClick={spotifyLogin}>
+          Spotify Login Code
+        </Button>
+        <Button style={{ background: '#5865F2' }} type="submit" className="w-100 mt-2" onClick={signingUp}>
           Sign Up
         </Button>
         <Form.Text className="text-muted">

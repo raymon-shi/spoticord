@@ -9,10 +9,10 @@ const router = express.Router()
 // creates a new user with username and password
 router.post('/signup', async (req, res, next) => {
   const { body } = req
-  const { username, password } = body
+  const { username, password, token } = body
   try {
     const createdUser = await User.create({
-      username, password, tracks: [], artists: [], genres: [], chats: [],
+      username, password, token, tracks: [], artists: [], genres: [], chats: [],
     })
     res.send(createdUser)
   } catch (error) {
@@ -23,12 +23,15 @@ router.post('/signup', async (req, res, next) => {
 // logs a user in if they exists
 router.post('/login', async (req, res, next) => {
   const { body } = req
-  const { username, password } = body
+  const { username, password, token } = body
   try {
     const user = await User.findOne({ username })
-    const match = await bcrypt.compare(password, user.password)
-    if (match) {
+    // const { _id } = user
+    const matchPassword = await bcrypt.compare(password, user.password)
+    if (matchPassword) {
       req.session.username = username
+      req.session.token = token
+      // req.session.id = _id
       res.send(user)
     } else {
       next(new Error('The user does not exists or the password may be incorrect!'))
