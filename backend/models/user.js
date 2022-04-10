@@ -6,12 +6,18 @@ const { Schema, model } = mongoose
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  fullname: { type: String, required: true },
+  bio: { type: String, required: true },
+  birthday: { type: String, required: true },
+  location: { type: String, required: true },
   token: { type: String, required: true },
+  image: { type: String, required: true },
   recent: { type: [] },
   tracks: { type: [] },
   artists: { type: [] },
   genres: { type: [] },
   chats: { type: [] },
+  created_on: Date,
 })
 
 // eslint-disable-next-line func-names

@@ -88,9 +88,10 @@ router.get('/callback', (req, res) => {
     })
 })
 
-router.get('/recently', async (req, res, next) => {
-  const { session } = req
+router.post('/recently', async (req, res, next) => {
+  const { session, body } = req
   const { token, username } = session
+  const { _id } = body
   spotifyAPI.setAccessToken(token)
 
   try {
@@ -101,10 +102,12 @@ router.get('/recently', async (req, res, next) => {
         name: s.track.artists[0].name, title: s.track.name, image: s.track.album.images[0].url, played: s.played_at, id: s.track.id + index,
       })
     })
-    await User.updateOne({ username }, { recent: recentSongs })
-    const user = await User.findOne({ username })
+    await User.updateOne({ _id }, { recent: recentSongs })
+    const user = await User.findById({ _id })
+    console.log(`${user.username} /recently`)
     res.send(user.recent)
   } catch (error) {
+    console.log(error)
     next(new Error('Error inside /recently'))
   }
 })
@@ -150,7 +153,6 @@ router.get('/myTopTracks', async (req, res, next) => {
         id: t.id + index,
       })
     })
-    console.log(myTopTracks[0].album)
     await User.updateOne({ username }, { tracks: myTopTracks })
     const user = await User.findOne({ username })
     res.send(user.tracks)

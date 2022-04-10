@@ -2,13 +2,14 @@
 
 const express = require('express')
 const cookieSession = require('cookie-session')
+const fileUpload = require('express-fileupload')
 const path = require('path')
 const mongoose = require('mongoose')
 // const cors = require('cors')
 
 const accountRouter = require('./routes/account')
 const spotifyRouter = require('./routes/spotify')
-// const apiRouter = require('./routes/api')
+// const imageRouter = require('./routes/image')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -33,10 +34,12 @@ app.use(
   }),
 )
 
+app.use(fileUpload())
+
 // routers
 app.use('/account', accountRouter)
 app.use('/spotify', spotifyRouter)
-// app.use('/api', apiRouter)
+// app.use('/image', imageRouter)
 
 // default error handling
 app.use((err, req, res, next) => {

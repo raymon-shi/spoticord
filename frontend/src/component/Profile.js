@@ -1,34 +1,39 @@
+/* eslint-disable consistent-return */
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {
-  Container, Button, Alert, Card, Table, Tabs, Tab,
+  Container, Button, Alert, Card, Table, Tabs, Tab, ListGroup, ListGroupItem,
 } from 'react-bootstrap'
-import { useLocation } from 'react-router-dom'
-import SpotifyWebApi from 'spotify-web-api-js'
-import { v4 as uuidv4 } from 'uuid'
+import { useLocation, useParams, useNavigate } from 'react-router-dom'
 
 const Profile = () => {
-  const [username, setUsername] = useState('')
+  const [profilePerson, setProfilePerson] = useState({})
   const [profileError, setProfileError] = useState('')
   const [recent, setRecent] = useState([])
   const [artist, setArtist] = useState([])
   const [tracks, setTracks] = useState([])
   const [mode, setMode] = useState('recent')
+  const { id } = useParams()
 
-  const gettingUserInformation = async () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { state } = location
+  const { currentUser } = state
+
+  const getProfileUserInformation = async () => {
     try {
-      const { data } = await axios.get('/account/user')
-      if (data.username) {
-        setUsername(data.username)
-      }
+      const { data } = await axios.post('/account/profile', { _id: id })
+      setProfilePerson(data)
+      return data.username
     } catch (error) {
+      navigate('/')
       setProfileError('There was an error trying to get the user information!')
     }
   }
 
   const recentSongs = async () => {
     try {
-      const { data } = await axios.get('/spotify/recently')
+      const { data } = await axios.post('/spotify/recently', { _id: id })
       setRecent(data)
     } catch (error) {
       setProfileError('There was an error trying to get your most recent songs!')
@@ -47,7 +52,6 @@ const Profile = () => {
   const topTracks = async () => {
     try {
       const { data } = await axios.get('/spotify/myTopTracks')
-      console.log(data)
       setTracks(data)
     } catch (error) {
       setProfileError('There was an error trying to get your most top songs!')
@@ -146,31 +150,52 @@ const Profile = () => {
       </Table>
     </>
   )
+  // useEffect(() => {
+  //   getProfileUserInformation()
+  //   const intervalID = setInterval(() => {
+  //     getProfileUserInformation()
+  //   }, 5000)
+  //   return () => clearInterval(intervalID)
+  // }, [])
 
   useEffect(() => {
-    recentSongs()
-    topAritsts()
-    topTracks()
-    const intervalID = setInterval(() => {
-      recentSongs()
-      topAritsts()
-      topTracks()
-    }, 50000)
-    return () => clearInterval(intervalID)
-  }, [])
-
-  useEffect(() => {
-    gettingUserInformation()
+    getProfileUserInformation().then(res => {
+      console.log(res + currentUser)
+      if (res === currentUser) {
+        recentSongs()
+        topAritsts()
+        topTracks()
+        const intervalID = setInterval(() => {
+          recentSongs()
+          topAritsts()
+          topTracks()
+        }, 50000)
+        return () => clearInterval(intervalID)
+      }
+      const intervalID = setInterval(() => {
+        getProfileUserInformation()
+      }, 2000)
+      return () => clearInterval(intervalID)
+    })
+    return undefined
   }, [])
 
   return (
     <Container>
       {profileError ? <Alert variant="danger">{profileError}</Alert> : null}
-      <h1>
-        Welcome to Spoticord,
-        {' '}
-        {username}
-      </h1>
+      <h1>{`${profilePerson.username}'s Profile`}</h1>
+      <Card style={{ width: '18rem' }} className="mb-5">
+        <Card.Img variant="top" src={profilePerson.image} />
+        <Card.Body>
+          <Card.Title>{profilePerson.fullname}</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">{profilePerson.username}</Card.Subtitle>
+          <br />
+          <Card.Subtitle className="mb-2 text-muted">{profilePerson.bio}</Card.Subtitle>
+          <Card.Subtitle className="mb-2 text-muted">{profilePerson.location}</Card.Subtitle>
+          <Card.Subtitle className="mb-2 text-muted">{profilePerson.birthday}</Card.Subtitle>
+
+        </Card.Body>
+      </Card>
       <Tabs
         defaultActiveKey="recent"
         id="controlled-tab-example"
