@@ -37,13 +37,13 @@ const Login = () => {
       <h1 style={{ fontWeight: 'bold' }}>Login</h1>
       <Form onSubmit={e => e.preventDefault()}>
         {loginError ? <Alert variant="danger">{loginError}</Alert> : null}
-        <Form.Group className="mb-3" controlId="formBasicUsername" value={username} onChange={e => setUsername(e.target.value)}>
+        <Form.Group className="mb-3" controlId="formBasicUsername">
           <Form.Label>Username</Form.Label>
-          <Form.Control type="text" placeholder="Enter username..." value={password} onChange={e => setPassword(e.target.value)} />
+          <Form.Control type="text" placeholder="Enter username..." value={username} onChange={e => setUsername(e.target.value)} />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" placeholder="Enter password..." />
+          <Form.Control type="password" placeholder="Enter password..." value={password} onChange={e => setPassword(e.target.value)} />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicToken">
           <Form.Label>Access Token</Form.Label>
