@@ -2,50 +2,30 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import {
-  Container, Button, Alert, Card, Table, Tabs, Tab, ListGroup, ListGroupItem,
+  Container, Alert, Card, Table, Tabs, Tab,
 } from 'react-bootstrap'
-import { useLocation, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import NavBar from './NavBar'
 
 const Profile = () => {
   const [profilePerson, setProfilePerson] = useState({})
   const [profileError, setProfileError] = useState('')
-  const [recent, setRecent] = useState([])
   const [artist, setArtist] = useState([])
   const [tracks, setTracks] = useState([])
-  const [mode, setMode] = useState('recent')
-  const { id } = useParams()
+  const [mode, setMode] = useState('tracks')
+  const { currentuser, profileuser } = useParams()
 
   const navigate = useNavigate()
-  const location = useLocation()
-  const { state } = location
-  const { currentUser } = state
 
   const getProfileUserInformation = async () => {
     try {
-      const { data } = await axios.post('/account/profile', { _id: id })
+      const { data } = await axios.post('/account/profile', { profileuser })
       setProfilePerson(data)
-      return data.username
+      setArtist(data.artists)
+      setTracks(data.tracks)
     } catch (error) {
       navigate('/')
       setProfileError('There was an error trying to get the user information!')
-    }
-  }
-
-  const recentSongs = async () => {
-    try {
-      const { data } = await axios.post('/spotify/recently', { _id: id })
-      setRecent(data)
-    } catch (error) {
-      setProfileError('There was an error trying to get your most recent songs!')
-    }
-  }
-
-  const topAritsts = async () => {
-    try {
-      const { data } = await axios.get('/spotify/myTopArtists')
-      setArtist(data)
-    } catch (error) {
-      setProfileError('There was an error trying to get your most top artists!')
     }
   }
 
@@ -58,30 +38,56 @@ const Profile = () => {
     }
   }
 
-  const recentlyListenedToView = () => (
+  const topAritsts = async () => {
+    try {
+      const { data } = await axios.get('/spotify/myTopArtists')
+      setArtist(data)
+    } catch (error) {
+      setProfileError('There was an error trying to get your most top artists!')
+    }
+  }
+
+  useEffect(() => {
+    getProfileUserInformation()
+    if (currentuser === profileuser) {
+      topTracks()
+      topAritsts()
+    }
+    const intervalID = setInterval(() => {
+      if (currentuser === profileuser) {
+        topTracks()
+        topAritsts()
+      }
+    }, 60000)
+    return () => clearInterval(intervalID)
+  }, [])
+
+  const myTopTracksView = () => (
     <>
-      <h2>Recently Listened To</h2>
+      <h2>Top Tracks</h2>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>#</th>
             <th>Image</th>
-            <th>Song Title</th>
-            <th>Artist</th>
-            <th>Time of Listen</th>
+            <th>Track Name</th>
+            <th>Artist Name</th>
+            <th>Album Name</th>
+            <th>Album Type</th>
           </tr>
         </thead>
         <tbody>
-          {recent.map((r, index) => (
-            <tr key={r.id}>
-              <td>{index}</td>
+          {tracks.map((t, index) => (
+            <tr key={t.id}>
+              <td>{index + 1}</td>
               <td>
                 {' '}
-                <img style={{ height: '100px' }} src={r.image} alt="" />
+                <img style={{ height: '100px' }} src={t.image} alt="" />
               </td>
-              <td>{r.title}</td>
-              <td>{r.name}</td>
-              <td>{`${new Date(r.played).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`}</td>
+              <td>{t.name}</td>
+              <td>{t.artist}</td>
+              <td>{t.album}</td>
+              <td>{t.type}</td>
             </tr>
           ))}
         </tbody>
@@ -118,70 +124,9 @@ const Profile = () => {
     </>
   )
 
-  const myTopTracksView = () => (
-    <>
-      <h2>Top Tracks</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Image</th>
-            <th>Track Name</th>
-            <th>Artist Name</th>
-            <th>Album Name</th>
-            <th>Album Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tracks.map((t, index) => (
-            <tr key={t.id}>
-              <td>{index + 1}</td>
-              <td>
-                {' '}
-                <img style={{ height: '100px' }} src={t.image} alt="" />
-              </td>
-              <td>{t.name}</td>
-              <td>{t.artist}</td>
-              <td>{t.album}</td>
-              <td>{t.type}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </>
-  )
-  // useEffect(() => {
-  //   getProfileUserInformation()
-  //   const intervalID = setInterval(() => {
-  //     getProfileUserInformation()
-  //   }, 5000)
-  //   return () => clearInterval(intervalID)
-  // }, [])
-
-  useEffect(() => {
-    getProfileUserInformation().then(res => {
-      console.log(res + currentUser)
-      if (res === currentUser) {
-        recentSongs()
-        topAritsts()
-        topTracks()
-        const intervalID = setInterval(() => {
-          recentSongs()
-          topAritsts()
-          topTracks()
-        }, 50000)
-        return () => clearInterval(intervalID)
-      }
-      const intervalID = setInterval(() => {
-        getProfileUserInformation()
-      }, 2000)
-      return () => clearInterval(intervalID)
-    })
-    return undefined
-  }, [])
-
   return (
     <Container>
+      <NavBar username={currentuser} />
       {profileError ? <Alert variant="danger">{profileError}</Alert> : null}
       <h1>{`${profilePerson.username}'s Profile`}</h1>
       <Card style={{ width: '18rem' }} className="mb-5">
@@ -197,15 +142,11 @@ const Profile = () => {
         </Card.Body>
       </Card>
       <Tabs
-        defaultActiveKey="recent"
         id="controlled-tab-example"
         activeKey={mode}
         onSelect={m => setMode(m)}
         className="mb-3"
       >
-        <Tab eventKey="recent" title="Recently Listened To">
-          {recentlyListenedToView()}
-        </Tab>
         <Tab eventKey="tracks" title="Top Tracks">
           {myTopTracksView()}
         </Tab>

@@ -2,13 +2,29 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Container, Table } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import NavBar from './NavBar'
 
 const Home = () => {
   const [username, setUsername] = useState('')
+  const [id, setID] = useState('')
   const [users, setUsers] = useState([])
   const [homeError, setHomeError] = useState('')
 
+  const navigate = useNavigate()
+
+  // get the current user information
+  const getUser = async () => {
+    try {
+      const { data } = await axios.get('/account/user')
+      setUsername(data.username)
+      setID(data.id)
+    } catch (error) {
+      setHomeError('Error getting users')
+    }
+  }
+
+  // get all the users in the database
   const getUsers = async () => {
     try {
       const { data } = await axios.get('/account/users')
@@ -18,28 +34,26 @@ const Home = () => {
     }
   }
 
-  const getUser = async () => {
-    try {
-      const { data } = await axios.get('/account/user')
-      setUsername(data.username)
-    } catch (error) {
-      setHomeError('Error getting users')
-    }
-  }
+  // get the user once on refresh
+  useEffect(() => {
+    getUser()
+  }, [])
 
+  // get the users every 5 seconds
   useEffect(() => {
     getUsers()
-    getUser()
     const intervalID = setInterval(() => {
       getUsers()
-    }, 50000)
+    }, 5000)
     return () => clearInterval(intervalID)
   }, [])
 
   return (
     <Container>
+      <NavBar username={username} />
       <h1>{`Welcome to Spoticord, ${username}`}</h1>
       <h2>List of Users</h2>
+      {/* <button type="button" onClick={logout}>Logout</button> */}
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -56,7 +70,7 @@ const Home = () => {
                 <>
                   <td>{index + 1}</td>
                   <td><img src={image} width="100px" height="100px" alt="" /></td>
-                  <td><Link to={`/profile/${u._id}`} state={{ currentUser: username }}>{u.username}</Link></td>
+                  <td><Link to={`/profile/${username}/${u.username}`}>{u.username}</Link></td>
                 </>
               </tr>
             )

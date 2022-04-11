@@ -13,6 +13,7 @@ const Login = () => {
 
   const navigate = useNavigate()
 
+  // open up spotify access token link
   const spotifyLogin = async () => {
     try {
       const { data } = await axios.get('/spotify/login')
@@ -22,6 +23,7 @@ const Login = () => {
     }
   }
 
+  // logs the user in with username, password, and token
   const loggingIn = async () => {
     try {
       await axios.post('/account/login', { username, password, token })
@@ -37,18 +39,26 @@ const Login = () => {
       <h1 style={{ fontWeight: 'bold' }}>Login</h1>
       <Form onSubmit={e => e.preventDefault()}>
         {loginError ? <Alert variant="danger">{loginError}</Alert> : null}
+
+        {/* Username Input */}
         <Form.Group className="mb-3" controlId="formBasicUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control type="text" placeholder="Enter username..." value={username} onChange={e => setUsername(e.target.value)} />
         </Form.Group>
+
+        {/* Password Input */}
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Enter password..." value={password} onChange={e => setPassword(e.target.value)} />
         </Form.Group>
+
+        {/* Token Inpute */}
         <Form.Group className="mb-3" controlId="formBasicToken">
           <Form.Label>Access Token</Form.Label>
           <Form.Control type="password" placeholder="Enter access token..." value={token} onChange={e => setToken(e.target.value)} />
         </Form.Group>
+
+        {/* Buttons Inpute */}
         <div>
           <Button style={{ background: '#1ED760' }} type="submit" className="w-100" onClick={spotifyLogin}>
             Spotify Login Code

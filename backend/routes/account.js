@@ -30,13 +30,15 @@ router.post('/login', async (req, res, next) => {
   } = body
   try {
     const user = await User.findOne({ username })
-    // const { _id } = user
+    const { _id } = user
     const matchPassword = await bcrypt.compare(password, user.password)
     if (matchPassword) {
+      // update the session username, token, id
       req.session.username = username
       req.session.token = token
-      const { _id } = user
       req.session.id = _id
+      // update the old token with the new token
+      await User.updateOne({ _id }, { token })
       res.send(user)
     } else {
       next(new Error('The user does not exists or the password may be incorrect!'))
@@ -50,15 +52,20 @@ router.post('/login', async (req, res, next) => {
 router.post('/logout', isAuthenticated, (req, res, next) => {
   const { session } = req
   const { username } = session
+
+  // set the session information all to undefined
   req.session.username = undefined
+  req.session.token = undefined
+  req.session.id = undefined
+
   res.send(`The user with username "${username}" has been logged out!`)
 })
 
 // get user information
 router.get('/user', (req, res, next) => {
   const { session } = req
-  const { username } = session
-  res.send({ username })
+  const { username, id } = session
+  res.send({ username, id })
 })
 
 // get all users
@@ -72,14 +79,14 @@ router.get('/users', async (req, res, next) => {
 })
 
 router.post('/profile', async (req, res, next) => {
-  const { body } = req
-  const { _id } = body
+  const { body, session } = req
+  const { profileuser } = body
+  const { token } = session
   try {
-    const user = await User.findById({ _id })
+    const user = await User.findOne({ username: profileuser })
     const {
       username, image, recent, tracks, artists, genres, created_on, fullname, bio, birthday, location,
     } = user
-
     res.send({
       username, image, recent, tracks, artists, genres, created_on, fullname, bio, birthday, location,
     })

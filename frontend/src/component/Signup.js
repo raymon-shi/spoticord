@@ -17,6 +17,7 @@ const Signup = () => {
   const [signupError, setSignupError] = useState('')
   const navigate = useNavigate()
 
+  // opens the spotify access token url
   const spotifyLogin = async () => {
     try {
       const { data } = await axios.get('/spotify/login')
@@ -26,11 +27,19 @@ const Signup = () => {
     }
   }
 
+  // creates the user in the database
   const signingUp = async () => {
     try {
       await Promise.all([
         await axios.post('/account/signup', {
-          username, password, image: imageLink, token, fullname, bio, birthday, location,
+          username,
+          password,
+          image: imageLink,
+          token,
+          fullname,
+          bio,
+          birthday,
+          location,
         }),
         await axios.post('/account/login', { username, password, token }),
       ]).then(() => navigate('/'))
@@ -44,37 +53,43 @@ const Signup = () => {
       <h1 style={{ fontWeight: 'bold' }}>Sign Up</h1>
       <Form className="p-3 bg-light" onSubmit={e => e.preventDefault()}>
         {signupError ? <Alert variant="danger">{signupError}</Alert> : null}
-
+        {/* Username Input */}
         <Form.Group className="mb-3" controlId="formBasicUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control type="text" placeholder="Enter your username..." value={username} onChange={e => setUsername(e.target.value)} />
         </Form.Group>
 
+        {/* Password Input */}
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control type="password" placeholder="Enter your password..." value={password} onChange={e => setPassword(e.target.value)} />
         </Form.Group>
 
+        {/* Fullname Input */}
         <Form.Group className="mb-3" controlId="formBasicFullname">
           <Form.Label>Full Name</Form.Label>
           <Form.Control type="text" placeholder="Enter your full name..." value={fullname} onChange={e => setFullname(e.target.value)} />
         </Form.Group>
 
+        {/* Short Bio Input */}
         <Form.Group className="mb-3" controlId="formBasicBio">
           <Form.Label>Short Bio</Form.Label>
           <Form.Control as="textarea" placeholder="Enter your short bio..." value={bio} onChange={e => setBio(e.target.value)} />
         </Form.Group>
 
+        {/* Birthday Input */}
         <Form.Group className="mb-3" controlId="formBasicBirthday">
           <Form.Label>Birthday</Form.Label>
           <Form.Control type="text" placeholder="Enter your birthday..." value={birthday} onChange={e => setBirthday(e.target.value)} />
         </Form.Group>
 
+        {/* Location Input */}
         <Form.Group className="mb-3" controlId="formBasicLocation">
           <Form.Label>Location</Form.Label>
           <Form.Control type="text" placeholder="Enter your location..." value={location} onChange={e => setLocation(e.target.value)} />
         </Form.Group>
 
+        {/* Image Link Input */}
         <Form.Group controlId="formFile" className="mb-3">
           <Form.Label>Profile Picture Link</Form.Label>
           <Form.Control
@@ -84,11 +99,13 @@ const Signup = () => {
           />
         </Form.Group>
 
+        {/* Token Input */}
         <Form.Group className="mb-3" controlId="formBasicToken">
           <Form.Label>Access Token</Form.Label>
           <Form.Control type="password" placeholder="Enter your access token..." value={token} onChange={e => setToken(e.target.value)} />
         </Form.Group>
 
+        {/* Buttons Input */}
         <Button style={{ background: '#1ED760' }} type="submit" className="w-100" onClick={spotifyLogin}>
           Spotify Login Code
         </Button>
