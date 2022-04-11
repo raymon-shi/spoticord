@@ -2,12 +2,14 @@
 
 const express = require('express')
 const cookieSession = require('cookie-session')
+const fileUpload = require('express-fileupload')
 const path = require('path')
 const mongoose = require('mongoose')
+// const cors = require('cors')
 
-// const isAuthenticated = require('./middlewares/isAuthenticated')
-// const accountRouter = require('./routes/account')
-// const apiRouter = require('./routes/api')
+const accountRouter = require('./routes/account')
+const spotifyRouter = require('./routes/spotify')
+// const imageRouter = require('./routes/image')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -21,6 +23,7 @@ mongoose.connect(MONGO_URI, {
 
 app.use(express.static('dist'))
 app.use(express.json())
+// app.use(cors())
 
 // session
 app.use(
@@ -31,9 +34,12 @@ app.use(
   }),
 )
 
+app.use(fileUpload())
+
 // routers
-// app.use('/account', accountRouter)
-// app.use('/api', apiRouter)
+app.use('/account', accountRouter)
+app.use('/spotify', spotifyRouter)
+// app.use('/image', imageRouter)
 
 // default error handling
 app.use((err, req, res, next) => {
