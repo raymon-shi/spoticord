@@ -3,6 +3,16 @@
 ## Description
 A fullstack website that allows people to discover and talk to other people based on their Spotify top tracks and artist
 
+## Milestone 1
+- Added the MongoDB backend
+- Added user registration and login routes
+- Added Spotify API routes for getting the top tracks and artists
+- Added the signup page, login page, home page, and profile page
+- Added the navbar, with logo and logout
+
+## Milestone 2
+- Coming soon...
+
 ## Features
 Coming soon...
 
