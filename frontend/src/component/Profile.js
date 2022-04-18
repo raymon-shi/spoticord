@@ -12,6 +12,7 @@ const Profile = () => {
   const [profileError, setProfileError] = useState('')
   const [artist, setArtist] = useState([])
   const [tracks, setTracks] = useState([])
+  const [playlists, setPlaylists] = useState([])
   const [mode, setMode] = useState('tracks')
   const { currentuser, profileuser } = useParams()
 
@@ -23,6 +24,7 @@ const Profile = () => {
       setProfilePerson(data)
       setArtist(data.artists)
       setTracks(data.tracks)
+      setPlaylists(data.playlists)
     } catch (error) {
       navigate('/')
       setProfileError('There was an error trying to get the user information!')
@@ -47,16 +49,27 @@ const Profile = () => {
     }
   }
 
+  const getPlaylist = async () => {
+    try {
+      const { data } = await axios.get('/spotify/getPlaylist')
+      setPlaylists(data)
+    } catch (error) {
+      setProfileError('error getMe')
+    }
+  }
+
   useEffect(() => {
     getProfileUserInformation()
     if (currentuser === profileuser) {
       topTracks()
       topAritsts()
+      getPlaylist()
     }
     const intervalID = setInterval(() => {
       if (currentuser === profileuser) {
         topTracks()
         topAritsts()
+        getPlaylist()
       }
     }, 60000)
     return () => clearInterval(intervalID)
@@ -82,7 +95,7 @@ const Profile = () => {
               <td>{index + 1}</td>
               <td>
                 {' '}
-                <img style={{ height: '100px' }} src={t.image} alt="" />
+                <img style={{ height: '100px', width: '100px' }} src={t.image} alt="" />
               </td>
               <td>{t.name}</td>
               <td>{t.artist}</td>
@@ -113,10 +126,41 @@ const Profile = () => {
               <td>{index + 1}</td>
               <td>
                 {' '}
-                <img style={{ height: '100px' }} src={a.image} alt="" />
+                <img style={{ height: '100px', width: '100px' }} src={a.image} alt="" />
               </td>
               <td>{a.name}</td>
               <td>{a.genres}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </>
+  )
+
+  const myPlaylistView = () => (
+    <>
+      <h2>Playlists</h2>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Total Tracks</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          {playlists.map((p, index) => (
+            <tr key={p.id}>
+              <td>{index + 1}</td>
+              <td>
+                {' '}
+                <img style={{ height: '100px', width: '100px' }} src={p.playlistImage} alt="" />
+              </td>
+              <td>{p.playlistName}</td>
+              <td>{p.playlistTrackTotal}</td>
+              <td><a href={`${p.playlistLink}`}>Playlist Link</a></td>
             </tr>
           ))}
         </tbody>
@@ -152,6 +196,9 @@ const Profile = () => {
         </Tab>
         <Tab eventKey="artists" title="Top Artists">
           {myTopArtistView()}
+        </Tab>
+        <Tab eventKey="playlists" title="Playlists">
+          {myPlaylistView()}
         </Tab>
       </Tabs>
     </Container>

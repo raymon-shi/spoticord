@@ -1,7 +1,9 @@
 /* eslint-disable global-require */
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Container, Table } from 'react-bootstrap'
+import {
+  Alert, Button, Container, Table,
+} from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import NavBar from './NavBar'
 
@@ -51,9 +53,17 @@ const Home = () => {
   return (
     <Container>
       <NavBar username={username} />
-      <h1>{`Welcome to Spoticord, ${username}`}</h1>
+      {homeError ? <Alert variant="danger">{homeError}</Alert> : null}
+      <h1>{`Welcome to Spoticord, ${username || 'please login!'}`}</h1>
+      <hr />
+      {username ? (
+        <>
+          <h2>Join a Chatroom</h2>
+          <Button style={{ background: '#1ED760', border: 'none' }} onClick={() => navigate('/chatroom')}>Chatrooms</Button>
+        </>
+      ) : null}
+      <hr />
       <h2>List of Users</h2>
-      {/* <button type="button" onClick={logout}>Logout</button> */}
       <Table striped bordered hover>
         <thead>
           <tr>

@@ -78,17 +78,17 @@ router.get('/users', async (req, res, next) => {
   }
 })
 
+// get profile information
 router.post('/profile', async (req, res, next) => {
-  const { body, session } = req
+  const { body } = req
   const { profileuser } = body
-  const { token } = session
   try {
     const user = await User.findOne({ username: profileuser })
     const {
-      username, image, recent, tracks, artists, genres, created_on, fullname, bio, birthday, location,
+      username, image, recent, tracks, artists, playlists, created_on, fullname, bio, birthday, location,
     } = user
     res.send({
-      username, image, recent, tracks, artists, genres, created_on, fullname, bio, birthday, location,
+      username, image, recent, tracks, artists, playlists, created_on, fullname, bio, birthday, location,
     })
   } catch (error) {
     next(new Error('There was an error in /profile'))
