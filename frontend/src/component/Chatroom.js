@@ -126,7 +126,7 @@ const Chatroom = () => {
   return (
     <>
       {showChatroom ? null : chatMenuView()}
-      {<Chat socket={socket} username={username} joinChatroomName={joinChatroomName} showChatroom={showChatroom} />}
+      {<Chat socket={socket} username={username} joinChatroomName={joinChatroomName} showChatroom={showChatroom} setShowChatroom={setShowChatroom} />}
     </>
   )
 }

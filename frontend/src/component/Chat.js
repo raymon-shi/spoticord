@@ -6,7 +6,7 @@ import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 
 const Chat = ({
-  socket, username, joinChatroomName, showChatroom,
+  socket, username, joinChatroomName, showChatroom, setShowChatroom,
 }) => {
   const [chatMembers, setChatMembers] = useState([])
   const [message, setMessage] = useState('')
@@ -79,6 +79,15 @@ const Chat = ({
     }
   }
 
+  const removingMember = async () => {
+    try {
+      const { data } = await axios.post('/chat/removeChatMember', { username, joinChatroomName })
+      setChatMembers(data)
+    } catch (error) {
+      setChatError('Error getting chat room messages')
+    }
+  }
+
   useEffect(() => {
     getChatRoomMessages()
     const intervalID = setInterval(() => {
@@ -89,11 +98,26 @@ const Chat = ({
 
   return (
     <>
-      {chatError ? <Alert variant="danger">{chatError}</Alert> : null}
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <Card className="text-center w-25" style={{ height: '100vh' }}>
           <Card.Header style={{ background: '#5865F2', color: 'white' }}>Chat Users</Card.Header>
-          {chatMembers.map(n => <p key={n}>{n}</p>)}
+          <Card.Body>
+            {chatMembers.map(n => <p key={n}>{n}</p>)}
+          </Card.Body>
+          <Card.Footer>
+            <Button
+              style={{
+                background: '#1ED760', border: 'none', position: 'relative',
+              }}
+              onClick={() => {
+                removingMember()
+                setShowChatroom(false)
+              }}
+              disabled={!showChatroom}
+            >
+              Exit Chat
+            </Button>
+          </Card.Footer>
         </Card>
         <Card className="text-center w-50" style={{ height: '100vh' }}>
           <Card.Header style={{ background: '#5865F2', color: 'white' }}>{joinChatroomName}</Card.Header>

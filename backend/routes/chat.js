@@ -60,6 +60,22 @@ router.post('/addChatMember', async (req, res, next) => {
   }
 })
 
+router.post('/removeChatMember', async (req, res, next) => {
+  const { body } = req
+  const { username, joinChatroomName } = body
+  try {
+    const chatroom = await Chatroom.findOne({ name: joinChatroomName })
+    const { members } = chatroom
+    if (members.includes(username)) {
+      const filteredMembers = members.filter(m => m !== username)
+      await Chatroom.updateOne({ name: joinChatroomName }, { members: filteredMembers })
+      res.send(filteredMembers)
+    }
+  } catch (error) {
+    next(new Error('There was an error in /removeChatMember'))
+  }
+})
+
 // adds the message to the database
 router.post('/createMessage', async (req, res, next) => {
   const { body } = req
