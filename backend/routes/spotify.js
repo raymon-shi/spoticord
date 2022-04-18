@@ -88,6 +88,7 @@ router.get('/callback', (req, res) => {
     })
 })
 
+// get the top artists and update the database
 router.get('/myTopArtists', async (req, res, next) => {
   const { session } = req
   const { token, username } = session
@@ -109,6 +110,7 @@ router.get('/myTopArtists', async (req, res, next) => {
   }
 })
 
+// get the top tracks and update the database
 router.get('/myTopTracks', async (req, res, next) => {
   const { session } = req
   const { token, username } = session
@@ -138,6 +140,7 @@ router.get('/myTopTracks', async (req, res, next) => {
   }
 })
 
+// send the uri of the artists based on chatroom name
 router.post('/searchChatroomArtist', async (req, res, next) => {
   const { body, session } = req
   const { artist } = body
@@ -153,6 +156,7 @@ router.post('/searchChatroomArtist', async (req, res, next) => {
   }
 })
 
+// get the playlists and update the database
 router.get('/getPlaylist', async (req, res, next) => {
   const { session } = req
   const { token, username } = session
@@ -163,7 +167,6 @@ router.get('/getPlaylist', async (req, res, next) => {
     const { id } = body
     const playlists = await spotifyAPI.getUserPlaylists({ id, limit: 50 })
     const playlistInfo = []
-    console.log(playlists.body.items)
     playlists.body.items.forEach((playlist, index) => {
       playlistInfo.push({
         playlistName: playlist.name, playlistImage: playlist.images[0].url, playlistTrackTotal: playlist.tracks.total, playlistLink: playlist.external_urls.spotify, id: index,

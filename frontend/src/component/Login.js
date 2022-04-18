@@ -29,7 +29,6 @@ const Login = () => {
       await axios.post('/account/login', { username, password, token })
       navigate('/')
     } catch (error) {
-      console.log(error)
       setLoginError('Logging in was unsuccessful! Check login information!')
     }
   }

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Button, Form } from 'react-bootstrap'
+import {
+  Card, Button, Form, Alert,
+} from 'react-bootstrap'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -10,7 +12,6 @@ const Chat = ({
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
   const [chatError, setChatError] = useState('')
-  // const [chatroomArtist, setChatroomArtist] = useState('')
   const [spotifyURI, setSpotifyURI] = useState('')
 
   const chatroomMembers = async () => {
@@ -71,7 +72,6 @@ const Chat = ({
 
   const getChatRoomMessages = async () => {
     try {
-      console.log(`${joinChatroomName} HERE CONSOLE LOSG`)
       const { data } = await axios.post('/chat/getMessagesChatroom', { chatroomName: joinChatroomName })
       setMessages(data)
     } catch (error) {
@@ -89,6 +89,7 @@ const Chat = ({
 
   return (
     <>
+      {chatError ? <Alert variant="danger">{chatError}</Alert> : null}
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         <Card className="text-center w-25" style={{ height: '100vh' }}>
           <Card.Header style={{ background: '#5865F2', color: 'white' }}>Chat Users</Card.Header>

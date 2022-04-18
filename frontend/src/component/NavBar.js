@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Navbar, Container, Button } from 'react-bootstrap'
+import {
+  Navbar, Container, Alert,
+} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import logo from '../assets/spoticord.png'
@@ -7,12 +9,12 @@ import logo from '../assets/spoticord.png'
 const NavBar = () => {
   const [navBarError, setNavBarError] = useState('')
   const [user, setUser] = useState('')
+
   // logging the user out
   const logout = async () => {
     try {
       await axios.post('/account/logout')
     } catch (error) {
-      console.log(error)
       setNavBarError('Error logging out')
     }
   }
@@ -36,6 +38,7 @@ const NavBar = () => {
     <>
       <Navbar>
         <Container>
+          {navBarError ? <Alert variant="danger">{navBarError}</Alert> : null}
           <Navbar.Brand
             href="/"
           >
@@ -74,7 +77,6 @@ const NavBar = () => {
 
             </Navbar.Collapse>
           )}
-
         </Container>
       </Navbar>
     </>

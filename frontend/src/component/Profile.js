@@ -95,7 +95,7 @@ const Profile = () => {
               <td>{index + 1}</td>
               <td>
                 {' '}
-                <img style={{ height: '100px' }} src={t.image} alt="" />
+                <img style={{ height: '100px', width: '100px' }} src={t.image} alt="" />
               </td>
               <td>{t.name}</td>
               <td>{t.artist}</td>
@@ -126,7 +126,7 @@ const Profile = () => {
               <td>{index + 1}</td>
               <td>
                 {' '}
-                <img style={{ height: '100px' }} src={a.image} alt="" />
+                <img style={{ height: '100px', width: '100px' }} src={a.image} alt="" />
               </td>
               <td>{a.name}</td>
               <td>{a.genres}</td>

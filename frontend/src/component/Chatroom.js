@@ -19,26 +19,27 @@ const Chatroom = () => {
 
   const socket = io('http://localhost:3000')
 
+  // get user information
   const getUserInformation = async () => {
     try {
       const { data } = await axios.get('/account/user')
       setUsername(data.username)
-      console.log(username)
     } catch (error) {
       setChatroomError('Error getting current user')
     }
   }
 
+  // get the chatrooms
   const gettingChatrooms = async () => {
     try {
       const { data } = await axios.get('/chat/chatrooms')
-      console.log(JSON.stringify(data))
       setAllChatroomNames(data)
     } catch (error) {
       setCreateChatroomError('error getting chat')
     }
   }
 
+  // create a new chatroom
   const creatingNewChatroom = async () => {
     try {
       await axios.post('/chat/createChatroom', { name: createChatroomName, username })
@@ -47,11 +48,11 @@ const Chatroom = () => {
     }
   }
 
+  // add current user to chatroom
   const addingChatMember = async () => {
     try {
       await axios.post('/chat/addChatMember', { username, joinChatroomName })
     } catch (error) {
-      console.log((error))
       setJoinChatroomName('error adding chat member')
     }
   }
@@ -59,6 +60,7 @@ const Chatroom = () => {
   const chatMenuView = () => (
     <Container>
       <NavBar />
+      {chatroomError ? <Alert variant="danger">{chatroomError}</Alert> : null}
       <h1>Join a Chatroom!</h1>
       <Form onSubmit={e => e.preventDefault()}>
         <Form.Group className="mb-3" controlId="formBasicJoinChatroomSelect">
@@ -105,6 +107,7 @@ const Chatroom = () => {
             setCreateChatroomName('')
             setChatroomMessage('A new room has been created! Please refresh!')
           }}
+          disabled={createChatroomName.length === 0}
         >
           Create
         </Button>
@@ -124,8 +127,6 @@ const Chatroom = () => {
     <>
       {showChatroom ? null : chatMenuView()}
       {<Chat socket={socket} username={username} joinChatroomName={joinChatroomName} showChatroom={showChatroom} />}
-      {/* {showChatroom ? <Chat socket={socket} username={username} joinChatroomName={joinChatroomName} /> : chatMenuView()} */}
-
     </>
   )
 }

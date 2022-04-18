@@ -16,7 +16,7 @@ const userSchema = new Schema({
   tracks: { type: [] },
   artists: { type: [] },
   playlists: { type: [] },
-  created_on: Date,
+  created_on: new Date(),
 })
 
 // eslint-disable-next-line func-names
