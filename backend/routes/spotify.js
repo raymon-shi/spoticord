@@ -147,10 +147,33 @@ router.post('/searchChatroomArtist', async (req, res, next) => {
 
   try {
     const artistResults = await spotifyAPI.searchArtists(artist)
-    console.log(`${artistResults.body.artists.items[0].uri} @@@@@@@@@@@@@@@@@ `)
     res.send(artistResults.body.artists.items[0].uri)
   } catch (error) {
     next(new Error('Error searching up artist'))
+  }
+})
+
+router.get('/getPlaylist', async (req, res, next) => {
+  const { session } = req
+  const { token, username } = session
+  spotifyAPI.setAccessToken(token)
+  try {
+    const data = await spotifyAPI.getMe()
+    const { body } = data
+    const { id } = body
+    const playlists = await spotifyAPI.getUserPlaylists({ id, limit: 50 })
+    const playlistInfo = []
+    console.log(playlists.body.items)
+    playlists.body.items.forEach((playlist, index) => {
+      playlistInfo.push({
+        playlistName: playlist.name, playlistImage: playlist.images[0].url, playlistTrackTotal: playlist.tracks.total, playlistLink: playlist.external_urls.spotify, id: index,
+      })
+    })
+    await User.updateOne({ username }, { playlists: playlistInfo })
+    const user = await User.findOne({ username })
+    res.send(user.playlists)
+  } catch (error) {
+    next(new Error('Error in getMe'))
   }
 })
 

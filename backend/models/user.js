@@ -15,8 +15,7 @@ const userSchema = new Schema({
   recent: { type: [] },
   tracks: { type: [] },
   artists: { type: [] },
-  genres: { type: [] },
-  chats: { type: [] },
+  playlists: { type: [] },
   created_on: Date,
 })
 
