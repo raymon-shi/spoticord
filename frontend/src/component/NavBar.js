@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navbar, Container, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import logo from '../assets/sc.png'
 
-const NavBar = ({ username }) => {
+const NavBar = () => {
   const [navBarError, setNavBarError] = useState('')
+  const [user, setUser] = useState('')
   // logging the user out
   const logout = async () => {
     try {
@@ -15,6 +16,22 @@ const NavBar = ({ username }) => {
       setNavBarError('Error logging out')
     }
   }
+
+  // get the current user information
+  const getUser = async () => {
+    try {
+      const { data } = await axios.get('/account/user')
+      setUser(data.username)
+    } catch (error) {
+      setNavBarError('Error getting users')
+    }
+  }
+
+  // get the user once on refresh
+  useEffect(() => {
+    getUser()
+  }, [])
+
   return (
     <>
       <Navbar>
@@ -36,7 +53,7 @@ const NavBar = ({ username }) => {
             <Navbar.Text>
               Signed in as:
               {' '}
-              <a href={`/profile/${username}/${username}`}>{username}</a>
+              <a href={`/profile/${user}/${user}`}>{user}</a>
               {' | '}
             </Navbar.Text>
             <Navbar.Text>

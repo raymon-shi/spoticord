@@ -6,7 +6,7 @@ import Login from './component/Login'
 import Profile from './component/Profile'
 import Signup from './component/Signup'
 import Home from './component/Home'
-import NavBar from './component/NavBar'
+import Chatroom from './component/Chatroom'
 
 const App = () => {
   const [user, setUser] = useState('')
@@ -18,6 +18,7 @@ const App = () => {
           <Route exact path="/profile/:currentuser/:profileuser" element={<Profile />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/login" element={<Login />} />
+          <Route exact path="/chatroom" element={<Chatroom />} />
         </Routes>
       </BrowserRouter>
     </>

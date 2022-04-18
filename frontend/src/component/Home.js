@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Container, Table } from 'react-bootstrap'
+import { Button, Container, Table } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import NavBar from './NavBar'
 
@@ -52,6 +52,8 @@ const Home = () => {
     <Container>
       <NavBar username={username} />
       <h1>{`Welcome to Spoticord, ${username}`}</h1>
+      <h2>Join a Chatroom</h2>
+      <Button onClick={() => navigate('/chatroom')}>Chatrooms</Button>
       <h2>List of Users</h2>
       {/* <button type="button" onClick={logout}>Logout</button> */}
       <Table striped bordered hover>
