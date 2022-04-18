@@ -77,6 +77,7 @@ const Chatroom = () => {
         <Button
           variant="primary"
           type="submit"
+          style={{ background: '#1ED760', border: 'none' }}
           onClick={() => {
             socket.emit('join_room', joinChatroomName)
             setShowChatroom(true)
@@ -97,6 +98,7 @@ const Chatroom = () => {
         </Form.Group>
         <Button
           variant="primary"
+          style={{ background: '#1ED760', border: 'none' }}
           type="button"
           onClick={() => {
             creatingNewChatroom()

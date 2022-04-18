@@ -138,4 +138,20 @@ router.get('/myTopTracks', async (req, res, next) => {
   }
 })
 
+router.post('/searchChatroomArtist', async (req, res, next) => {
+  const { body, session } = req
+  const { artist } = body
+  const { token } = session
+
+  spotifyAPI.setAccessToken(token)
+
+  try {
+    const artistResults = await spotifyAPI.searchArtists(artist)
+    console.log(`${artistResults.body.artists.items[0].uri} @@@@@@@@@@@@@@@@@ `)
+    res.send(artistResults.body.artists.items[0].uri)
+  } catch (error) {
+    next(new Error('Error searching up artist'))
+  }
+})
+
 module.exports = router

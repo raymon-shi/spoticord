@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Navbar, Container, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import logo from '../assets/sc.png'
+import logo from '../assets/spoticord.png'
 
 const NavBar = () => {
   const [navBarError, setNavBarError] = useState('')
@@ -42,25 +42,39 @@ const NavBar = () => {
             <img
               alt=""
               src={logo}
-              width="321"
-              height="61"
+              width="200"
+              height="99"
               className="d-inline-block align-top"
             />
             {' '}
           </Navbar.Brand>
           <Navbar.Toggle />
-          <Navbar.Collapse className="justify-content-end">
-            <Navbar.Text>
-              Signed in as:
-              {' '}
-              <a href={`/profile/${user}/${user}`}>{user}</a>
-              {' | '}
-            </Navbar.Text>
-            <Navbar.Text>
-              <Link onClick={logout} to="/login">Log out</Link>
-            </Navbar.Text>
+          {user ? (
+            <Navbar.Collapse className="justify-content-end">
+              <Navbar.Text>
+                Signed in as:
+                {' '}
+                <a href={`/profile/${user}/${user}`}>{user}</a>
+                {' | '}
+              </Navbar.Text>
+              <Navbar.Text>
+                <Link onClick={logout} to="/login">Log out</Link>
+              </Navbar.Text>
 
-          </Navbar.Collapse>
+            </Navbar.Collapse>
+          ) : (
+            <Navbar.Collapse className="justify-content-end">
+              <Navbar.Text>
+                <Link to="/login">Login</Link>
+              </Navbar.Text>
+              {' | '}
+              <Navbar.Text>
+                <Link to="/signup">Sign up</Link>
+              </Navbar.Text>
+
+            </Navbar.Collapse>
+          )}
+
         </Container>
       </Navbar>
     </>
