@@ -11,7 +11,11 @@ A fullstack website that allows people to discover and talk to other people base
 - Added the navbar, with logo and logout
 
 ## Milestone 2
-- Coming soon...
+- Added a chatroom feature
+- Added necessary routes for entering, exiting, and sending messages within the chatroom
+- Added a Spotify player to each chatroom based on the title of the chatroom
+- Added playlists to the profile view
+- Fixed the navbar appearance for logged in and logged out view
 
 ## Features
 Coming soon...
