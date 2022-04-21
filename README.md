@@ -12,6 +12,13 @@ A fullstack website that allows people to discover others based on their Spotify
 - Users can view the message history of the chat room
 - Users can listen to a Spotify player within the chatroom; it's based on the name of the chatroom (so have the name of the chatroom be an artist)
 
+## How to Run the Files
+```
+git clone spoticord
+npm run dev
+open the browser and navigate to localhost:3000
+```
+
 ## Technologise
 - MongoDB
 - Mongoose
