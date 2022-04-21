@@ -1,24 +1,16 @@
 # Spoticord
 
 ## Description
-A fullstack website that allows people to discover and talk to other people based on their Spotify top tracks and artist
-
-## Milestone 1
-- Added the MongoDB backend
-- Added user registration and login routes
-- Added Spotify API routes for getting the top tracks and artists
-- Added the signup page, login page, home page, and profile page
-- Added the navbar, with logo and logout
-
-## Milestone 2
-- Added a chatroom feature
-- Added necessary routes for entering, exiting, and sending messages within the chatroom
-- Added a Spotify player to each chatroom based on the title of the chatroom
-- Added playlists to the profile view
-- Fixed the navbar appearance for logged in and logged out view
+A fullstack website that allows people to discover others based on their Spotify profile and chat with others in a chatroom. 
 
 ## Features
-Coming soon...
+- Users can create an account and log into their account
+- Users can view their profile page, which contains information about the user, their top tracks, top artists and their playlist
+- Users can view other people's profile page and see other users' top tracks, top artists, and their playlists
+- Users can create, join, and leave chatrooms
+- Users can message other users in real time within the chatrooms
+- Users can view the message history of the chat room
+- Users can listen to a Spotify player within the chatroom; it's based on the name of the chatroom (so have the name of the chatroom be an artist)
 
 ## Technologise
 - MongoDB
@@ -29,5 +21,6 @@ Coming soon...
 - React Router
 - Node.js
 - Axios
+- Bcrypt
 - Spotify Web API Node
 
